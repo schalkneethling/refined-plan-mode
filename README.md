@@ -4,6 +4,8 @@ Refined Plan Mode is a local web app for reviewing AI coding-agent plans with a 
 
 Instead of reviewing a long plan in a terminal and replying with one unanchored message, you can open the plan in a browser, leave comments on specific lines, ranges, or selected text, and submit the feedback as structured JSON for the agent to consume.
 
+![Refined Plan Mode showing an AI plan in a source viewer with anchored comments in the sidebar.](public/refined-plan-mode.webp)
+
 ## Current Status
 
 This is an MVP built for local use. The core review loop works:

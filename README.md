@@ -95,6 +95,22 @@ v2
 Do not summarize or truncate the plan.
 ```
 
+## Agent Skill and Slash Commands
+
+This repository also includes reusable agent scaffolding for the review loop:
+
+```text
+skills/refined-plan-mode/SKILL.md
+commands/rpm-start.md
+commands/rpm-feedback.md
+commands/rpm-advance.md
+commands/rpm-checkpoint.md
+commands/rpm-review.md
+commands/rpm-handoff.md
+```
+
+The skill defines the shared Refined Plan Mode protocol. The command files are intentionally thin slash-command prompts that route common moments in the loop through that protocol, including starting a plan, incorporating feedback, advancing the current state, auditing a plan, checkpointing, and preparing a handoff.
+
 ## Development
 
 Install dependencies:

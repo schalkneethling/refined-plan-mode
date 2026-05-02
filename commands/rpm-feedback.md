@@ -7,7 +7,7 @@ Steps:
 1. Read `.plan-review/.current-version` to find the current version.
 2. Read `.plan-review/feedback/plan-vN-feedback.json` for that version.
 3. Read `.plan-review/plans/plan-vN.md`.
-4. Address every feedback item in a revised plan.
+4. Address every feedback item in a revised plan, adding a "Feedback Addressed" section that maps comments to changes made.
 5. Write the revision to `.plan-review/plans/plan-vN+1.md`.
 6. Update `.plan-review/.current-version` to the new version.
 7. Reply with a short note naming the feedback file read and the new plan file written.

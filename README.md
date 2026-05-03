@@ -17,7 +17,93 @@ This is an MVP built for local use. The core review loop works:
 - submit feedback as JSON
 - approve a plan and copy it to `.plan-review/approved-plan.md`
 
-## Workflow
+## Quick Start
+
+Refined Plan Mode has two pieces:
+
+- a browser app in this repository for reviewing plan files
+- an agent skill plus slash-command prompts that keep the plan review loop consistent
+
+Use the skill and commands in the coding-agent workspace where the actual work will happen. Then run this browser app against that workspace's `.plan-review` directory.
+
+### 1. Make the skill and commands available to your agent
+
+This repository includes the reusable agent files:
+
+```text
+skills/refined-plan-mode/SKILL.md
+commands/rpm-start.md
+commands/rpm-feedback.md
+commands/rpm-advance.md
+commands/rpm-checkpoint.md
+commands/rpm-review.md
+commands/rpm-handoff.md
+```
+
+If your agent can load skills and slash commands from a repository, keep these files where they are. If your agent expects global files, copy or symlink them into that agent's skills and commands locations. For Codex, local skills live under:
+
+```text
+$CODEX_HOME/skills/refined-plan-mode/SKILL.md
+```
+
+After the skill and commands are available, start the review loop from the target project with:
+
+```text
+/rpm:start
+```
+
+The command asks the agent to use the Refined Plan Mode skill, inspect the project, write the first full plan to `.plan-review/plans/plan-v1.md`, and set `.plan-review/.current-version` to `v1`.
+
+### 2. Run the browser reviewer
+
+From this repository, install dependencies and start the app:
+
+```sh
+vp install
+PLAN_REVIEW_DIR=/absolute/path/to/target-project/.plan-review vp dev --host 127.0.0.1 --port 5173
+```
+
+Open:
+
+```text
+http://127.0.0.1:5173/
+```
+
+Review the current plan in the browser. You can leave comments on lines, ranges, or selected text, then submit feedback. The app writes feedback for the current version to:
+
+```text
+.plan-review/feedback/plan-v1-feedback.json
+```
+
+Approving a plan writes:
+
+```text
+.plan-review/approved-plan.md
+```
+
+### 3. Continue the loop with commands
+
+Use these commands in the target project:
+
+- `/rpm:feedback` reads feedback for the current plan version, writes the next plan version, and advances `.plan-review/.current-version`.
+- `/rpm:review` asks the agent to audit the latest plan for quality before you review it.
+- `/rpm:advance` moves to the next state: execute an approved plan, incorporate feedback, wait for review, or start a new plan.
+- `/rpm:checkpoint` reports the current version, feedback status, approval status, and recommended next action.
+- `/rpm:handoff` creates a compact continuation summary for another agent or future session.
+
+The core loop is:
+
+```text
+/rpm:start
+review in browser
+/rpm:feedback
+review in browser
+/rpm:advance
+```
+
+Repeat review and feedback until the plan is approved. Once approved, `/rpm:advance` executes the approved plan.
+
+## Manual Workflow
 
 In the project you want to review, ask the coding agent to write its plan to:
 
@@ -57,6 +143,8 @@ After submitting a review, feedback is written to:
 
 Ask the coding agent to read that file, address every comment, write the next plan version, and update `.plan-review/.current-version`.
 
+The slash commands above automate these prompts when your agent supports them.
+
 ## Suggested Agent Prompts
 
 For the first plan:
@@ -94,22 +182,6 @@ v2
 
 Do not summarize or truncate the plan.
 ```
-
-## Agent Skill and Slash Commands
-
-This repository also includes reusable agent scaffolding for the review loop:
-
-```text
-skills/refined-plan-mode/SKILL.md
-commands/rpm-start.md
-commands/rpm-feedback.md
-commands/rpm-advance.md
-commands/rpm-checkpoint.md
-commands/rpm-review.md
-commands/rpm-handoff.md
-```
-
-The skill defines the shared Refined Plan Mode protocol. The command files are intentionally thin slash-command prompts that route common moments in the loop through that protocol, including starting a plan, incorporating feedback, advancing the current state, auditing a plan, checkpointing, and preparing a handoff.
 
 ## Development
 

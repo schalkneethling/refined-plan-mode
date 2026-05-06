@@ -1,4 +1,4 @@
-# /rpm/reset
+# /rpm:reset
 
 Use the Refined Plan Mode skill to find the current `.plan-review` directory and clean it up while keeping the directory itself.
 

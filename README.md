@@ -38,6 +38,7 @@ commands/rpm-advance.md
 commands/rpm-checkpoint.md
 commands/rpm-review.md
 commands/rpm-handoff.md
+commands/rpm-reset.md
 ```
 
 If your agent can load skills and slash commands from a repository, keep these files where they are. If your agent expects global files, copy or symlink them into that agent's skills and commands locations. For Codex, local skills live under:
@@ -49,10 +50,20 @@ $CODEX_HOME/skills/refined-plan-mode/SKILL.md
 After the skill and commands are available, start the review loop from the target project with:
 
 ```text
-/rpm:start
+/rpm:start <full initial task prompt>
 ```
 
-The command asks the agent to use the Refined Plan Mode skill, inspect the project, write the first full plan to `.plan-review/plans/plan-v1.md`, and set `.plan-review/.current-version` to `v1`.
+Run this from an agent session that is already in plan mode. The text after `/rpm:start` should be the complete initial task you want the agent to plan around, just as you would normally describe the work before implementation.
+
+The command asks the plan-mode agent to use the Refined Plan Mode skill, inspect the project, write the first full plan to `.plan-review/plans/plan-v1.md`, and set `.plan-review/.current-version` to `v1`.
+
+Some agents may treat slash-command text as guidance rather than a strict procedure. If the agent skips the file-writing steps, restate the required output in the initial prompt:
+
+```text
+/rpm:start <full initial task prompt>
+
+Use the Refined Plan Mode command exactly: inspect the repository, write the complete first plan to .plan-review/plans/plan-v1.md, set .plan-review/.current-version to v1, summarize briefly, and do not implement yet.
+```
 
 ### 2. Run the browser reviewer
 
@@ -90,11 +101,12 @@ Use these commands in the target project:
 - `/rpm:advance` moves to the next state: execute an approved plan, incorporate feedback, wait for review, or start a new plan.
 - `/rpm:checkpoint` reports the current version, feedback status, approval status, and recommended next action.
 - `/rpm:handoff` creates a compact continuation summary for another agent or future session.
+- `/rpm/reset` empties the current `.plan-review` directory while keeping the directory itself.
 
 The core loop is:
 
 ```text
-/rpm:start
+/rpm:start <full initial task prompt>
 review in browser
 /rpm:feedback
 review in browser
